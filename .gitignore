@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Dağıtım paketleri
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+
+# Ortam değişkenleri
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE dosyaları
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Veritabanı
+*.db
+*.sqlite3
+
+# Sistem dosyaları
+.DS_Store
+Thumbs.db
+
+# Büyük veri dosyaları
+data/creditcard.csv
+*.csv 

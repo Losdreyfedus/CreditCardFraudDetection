@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Kredi Kartı Dolandırıcılık Tespiti</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            padding-top: 60px; 
+            background-color: #f8f9fa;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-shield-check"></i> Fraud Detection Portal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/dashboard">
+                            <i class="bi bi-graph-up"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/educational">
+                            <i class="bi bi-book"></i> Eğitim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/technical">
+                            <i class="bi bi-code-square"></i> Teknik Detaylar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-4">Gerçek Zamanlı Dashboard</h1>
+
+        <div class="alert alert-warning mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>Demo Veriler:</strong> Bu dashboard'da gösterilen veriler, sistemin işleyişini göstermek için oluşturulmuş örnek verilerdir. 
+            Gerçek işlem verileri veya dolandırıcılık vakaları değildir.
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Günlük İşlem</h6>
+                    <h2>1,234</h2>
+                    <p class="mb-0"><i class="bi bi-arrow-up"></i> %5.3 artış</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Tespit Edilen Dolandırıcılık</h6>
+                    <h2>23</h2>
+                    <p class="mb-0"><i class="bi bi-arrow-down"></i> %2.1 azalış</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Ortalama Tepki Süresi</h6>
+                    <h2>0.05s</h2>
+                    <p class="mb-0"><i class="bi bi-arrow-down"></i> %10 iyileşme</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Doğruluk Oranı</h6>
+                    <h2>{{ "%.1f"|format(metrics.accuracy * 100) }}%</h2>
+                    <p class="mb-0"><i class="bi bi-arrow-up"></i> %0.5 artış</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="dashboard-card">
+                    <h5>İşlem Trendi (Son 30 Gün)</h5>
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <h5>Dolandırıcılık Dağılımı</h5>
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h5>Model Performans Metrikleri</h5>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Doğruluk (Accuracy)</td>
+                                <td>{{ "%.1f"|format(metrics.accuracy * 100) }}%</td>
+                            </tr>
+                            <tr>
+                                <td>Kesinlik (Precision)</td>
+                                <td>{{ "%.1f"|format(metrics.precision * 100) }}%</td>
+                            </tr>
+                            <tr>
+                                <td>Duyarlılık (Recall)</td>
+                                <td>{{ "%.1f"|format(metrics.recall * 100) }}%</td>
+                            </tr>
+                            <tr>
+                                <td>F1 Skoru</td>
+                                <td>{{ "%.1f"|format(metrics.f1_score * 100) }}%</td>
+                            </tr>
+                            <tr>
+                                <td>AUC-ROC</td>
+                                <td>{{ "%.1f"|format(metrics.auc_roc * 100) }}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dashboard-card">
+                    <h5>Son Dolandırıcılık Tespitleri</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Zaman</th>
+                                    <th>Tutar</th>
+                                    <th>Risk Skoru</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for fraud in recent_frauds %}
+                                <tr>
+                                    <td>{{ fraud.timestamp if fraud.timestamp else '' }}</td>
+                                    <td>₺{{ "%.2f"|format(fraud.amount) }}</td>
+                                    <td>{{ fraud.risk_score }}%</td>
+                                    <td><span class="badge bg-danger">Engellendi</span></td>
+                                </tr>
+                                {% endfor %}
+                                {% if not recent_frauds %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Henüz tespit edilen dolandırıcılık yok.</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Trend verilerini al
+        const trendData = {{ trend_data|safe }};
+
+        // İşlem Trendi Grafiği
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: trendData.dates,
+                datasets: [{
+                    label: 'Normal İşlemler',
+                    data: trendData.normal_counts,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1
+                },
+                {
+                    label: 'Dolandırıcılık İşlemleri',
+                    data: trendData.fraud_counts,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Dolandırıcılık Dağılımı Pasta Grafiği
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Normal İşlemler', 'Dolandırıcılık'],
+                datasets: [{
+                    data: [98.2, 1.8],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.8)',
+                        'rgba(255, 99, 132, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
