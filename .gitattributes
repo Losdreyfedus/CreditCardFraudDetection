@@ -1,0 +1,15 @@
+# HTML dosyalarını dil istatistiklerinden hariç tut
+*.html linguist-documentation
+app/templates/* linguist-documentation
+
+# Python'u ana dil olarak belirt
+*.py linguist-detectable=true
+*.py linguist-language=Python
+
+# JavaScript dosyalarını dil istatistiklerinden hariç tut
+*.js linguist-documentation
+app/static/js/* linguist-documentation
+
+# CSS dosyalarını dil istatistiklerinden hariç tut
+*.css linguist-documentation
+app/static/css/* linguist-documentation 
